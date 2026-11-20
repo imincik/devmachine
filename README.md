@@ -29,8 +29,8 @@ or import the flake-parts module into an existing flake:
 }
 ```
 
-Then run `nix develop` and `devos up` to start the services VM
-(press `Ctrl-k` inside the VM to power it off).
+Then run `nix run .#devos -- up` to start the services VM and `nix develop` to
+launch a shell environment.
 
 ## Options
 

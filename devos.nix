@@ -10,7 +10,17 @@
   networking.hostName = lib.mkDefault "devos";
   networking.firewall.enable = false;
 
+  documentation.nixos.enable = false;
+
   services.getty.autologinUser = "root";
+  services.getty.helpLine = ''
+
+  ======================================
+    DevOS VM
+
+    Press Ctrl-k to power off the VM.
+  ======================================
+  '';
 
   system.stateVersion = "26.11";
 
