@@ -29,8 +29,11 @@ or import the flake-parts module into an existing flake:
 }
 ```
 
-Then run `nix run .#devos -- up` to start the services VM and `nix develop` to
-launch a shell environment.
+Then,
+
+1. run `nix run .#devos -- up` to start the services
+1. `nix develop` to launch a shell environment containing packages
+
 
 ## Options
 
