@@ -19,14 +19,10 @@
               host  all  all  0.0.0.0/0  trust
             '';
           };
-
-          virtualisation.forwardPorts = [
-            {
-              host.port = 5432;
-              guest.port = 5432;
-            }
-          ];
         };
+
+        # Ports forwarded from the host to the VM
+        forwardPorts = [ 5432 ];
 
         # Packages available in `nix develop`
         packages = [ pkgs.postgresql ];

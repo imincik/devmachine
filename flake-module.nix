@@ -28,6 +28,37 @@ in
           '';
         };
 
+        forwardPorts = mkOption {
+          type = types.listOf (
+            types.coercedTo types.port (port: { host = port; guest = port; }) (
+              types.submodule {
+                options = {
+                  host = mkOption {
+                    type = types.port;
+                    description = "Port on the host.";
+                  };
+                  guest = mkOption {
+                    type = types.port;
+                    description = "Port in the VM.";
+                  };
+                };
+              }
+            )
+          );
+          default = [ ];
+          example = [
+            5432
+            {
+              host = 8080;
+              guest = 80;
+            }
+          ];
+          description = ''
+            TCP ports forwarded from the host to the VM. A port number forwards
+            the same port, an attribute set maps a `host` port to a `guest` port.
+          '';
+        };
+
         packages = mkOption {
           type = types.listOf types.package;
           default = [ ];
@@ -58,6 +89,12 @@ in
           modules = [
             ./devos.nix
             cfg.services
+            {
+              virtualisation.forwardPorts = map (p: {
+                host.port = p.host;
+                guest.port = p.guest;
+              }) cfg.forwardPorts;
+            }
           ];
         };
 
