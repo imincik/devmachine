@@ -30,20 +30,25 @@ in
 
         forwardPorts = mkOption {
           type = types.listOf (
-            types.coercedTo types.port (port: { host = port; guest = port; }) (
-              types.submodule {
-                options = {
-                  host = mkOption {
-                    type = types.port;
-                    description = "Port on the host.";
+            types.coercedTo types.port
+              (port: {
+                host = port;
+                guest = port;
+              })
+              (
+                types.submodule {
+                  options = {
+                    host = mkOption {
+                      type = types.port;
+                      description = "Port on the host.";
+                    };
+                    guest = mkOption {
+                      type = types.port;
+                      description = "Port in the VM.";
+                    };
                   };
-                  guest = mkOption {
-                    type = types.port;
-                    description = "Port in the VM.";
-                  };
-                };
-              }
-            )
+                }
+              )
           );
           default = [ ];
           example = [

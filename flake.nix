@@ -35,6 +35,12 @@
 
           lib = import ./mkvm.nix { inherit (nixpkgs) lib; };
         };
+
+        perSystem =
+          { pkgs, ... }:
+          {
+            formatter = pkgs.nixfmt-tree;
+          };
       }
     );
 }

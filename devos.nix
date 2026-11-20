@@ -15,11 +15,11 @@
   services.getty.autologinUser = "root";
   services.getty.helpLine = ''
 
-  ======================================
-    DevOS VM
+    ======================================
+      DevOS VM
 
-    Press Ctrl-k to power off the VM.
-  ======================================
+      Press Ctrl-k to power off the VM.
+    ======================================
   '';
 
   system.stateVersion = "26.11";
