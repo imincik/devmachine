@@ -1,4 +1,4 @@
-{ modulesPath, ... }:
+{ lib, modulesPath, ... }:
 {
   imports = [
     "${modulesPath}/profiles/qemu-guest.nix"
@@ -7,6 +7,7 @@
 
   virtualisation.graphics = false;
 
+  networking.hostName = lib.mkDefault "devos";
   networking.firewall.enable = false;
 
   services.getty.autologinUser = "root";
