@@ -84,6 +84,30 @@ in
             example = lib.literalExpression "[ pkgs.htop ]";
             description = "List of packages installed in the VM.";
           };
+
+          cores = mkOption {
+            type = types.ints.positive;
+            default = 2;
+            example = 4;
+            description = "Number of CPU cores of the VM.";
+          };
+
+          memorySize = mkOption {
+            type = types.ints.positive;
+            default = 2048;
+            example = 4096;
+            description = "Memory size of the VM in MiB.";
+          };
+
+          diskSize = mkOption {
+            type = types.ints.positive;
+            default = 1024;
+            example = 10240;
+            description = ''
+              Disk size of the VM in MiB. Applies only when the disk image is
+              created, delete the existing `.qcow2` image to resize it.
+            '';
+          };
         };
 
         shell = {
@@ -120,6 +144,10 @@ in
             cfg.vm.services
             {
               environment.systemPackages = cfg.vm.packages;
+
+              virtualisation.cores = cfg.vm.cores;
+              virtualisation.memorySize = cfg.vm.memorySize;
+              virtualisation.diskSize = cfg.vm.diskSize;
 
               virtualisation.forwardPorts = map (p: {
                 host.port = p.host;

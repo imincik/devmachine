@@ -34,6 +34,19 @@ Then,
   - Description: packages installed in the VM
   - Default: `[ ]`
   - Example: `[ pkgs.htop ]`
+- `vm.cores`
+  - Description: number of CPU cores of the VM
+  - Default: `2`
+  - Example: `4`
+- `vm.memorySize`
+  - Description: memory size of the VM in MiB
+  - Default: `2048`
+  - Example: `4096`
+- `vm.diskSize`
+  - Description: disk size of the VM in MiB, applies only when the disk image
+    is created (delete the existing `.qcow2` image to resize it)
+  - Default: `1024`
+  - Example: `10240`
 
 ### Shell
 

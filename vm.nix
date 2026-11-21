@@ -16,9 +16,6 @@
   networking.firewall.enable = false;
 
   # Boot speed and closure size optimizations
-  virtualisation.cores = lib.mkDefault 2;
-  virtualisation.memorySize = lib.mkDefault 2048;
-
   nix.enable = lib.mkDefault false;
 
   networking.useNetworkd = lib.mkDefault true;
