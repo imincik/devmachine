@@ -12,7 +12,7 @@
     flake-parts.lib.mkFlake { inherit inputs; } (
       { flake-parts-lib, ... }:
       let
-        devmachineLib = import ./mkvm.nix { inherit (nixpkgs) lib; };
+        devmachineLib = import ./lib.nix { inherit (nixpkgs) lib; };
         devmachineModule = flake-parts-lib.importApply ./flake-module.nix { inherit (devmachineLib) mkVM; };
       in
       {
