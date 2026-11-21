@@ -53,5 +53,9 @@
 
   programs.bash.interactiveShellInit = ''
     bind -x '"\C-k": poweroff'
+
+    # Print boot time once boot has finished
+    systemctl is-system-running --wait >/dev/null 2>&1
+    systemd-analyze | head -1
   '';
 }
