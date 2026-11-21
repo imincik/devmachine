@@ -10,8 +10,7 @@
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
     devmachine = {
-      # url = "github:imincik/devmachine";
-      url = "path:/home/imincik/Projects/nix/devos/code";
+      url = "github:imincik/devmachine";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
