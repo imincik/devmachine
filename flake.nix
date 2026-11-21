@@ -29,9 +29,15 @@
             devmachine = devmachineModule;
           };
 
-          templates.default = {
-            path = ./templates/default;
-            description = "Project with services running in devmachine VM";
+          templates = {
+            default = {
+              path = ./templates/default;
+              description = "Default devmachine template";
+            };
+            postgres = {
+              path = ./templates/postgres;
+              description = "Template with postgresql service";
+            };
           };
 
           lib = devmachineLib;
