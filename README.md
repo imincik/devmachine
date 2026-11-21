@@ -40,3 +40,10 @@ Then,
   - Description: shell hook to run when entering `nix develop`
   - Default: `""`
   - Example: `''echo "Run 'dev services' to start services."''`
+
+
+## Credits
+
+Inspired by
+[Running local dev services with Nix](https://www.tweag.io/blog/2026-10-29-running-local-dev-services-with-nix/)
+blog post by Tweag.
