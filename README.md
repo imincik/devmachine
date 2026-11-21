@@ -1,6 +1,6 @@
 ## Quick Start
 
-Create a new project from the template:
+Add `devmachine` configuration to your project:
 
 ```
 nix flake init -t github:imincik/devmachine
@@ -8,8 +8,8 @@ nix flake init -t github:imincik/devmachine
 
 Then,
 
-1. run `nix run .#dev -- vm` to start a VM with services
-1. run `nix run .#dev -- shell` to launch a shell environment
+1. run `nix run .#dev -- vm` or `nix develop` + `dev vm` to start a VM with services
+1. run `nix run .#dev -- shell` or `nix develop` to launch a shell environment
 
 
 ## Configuration Options
