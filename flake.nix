@@ -38,9 +38,19 @@
         };
 
         perSystem =
-          { pkgs, ... }:
+          { pkgs, system, ... }:
           {
             formatter = pkgs.nixfmt-tree;
+
+            # Test that the template VM is building
+            checks.template-vm =
+              (flake-parts.lib.mkFlake { inherit inputs; } {
+                imports = [
+                  devmachineModule
+                  ./templates/default/devmachine.nix
+                ];
+                systems = [ system ];
+              }).packages.${system}.devmachine-vm;
           };
       }
     );
