@@ -103,7 +103,7 @@ in
         packages.devos-vm = mkVM {
           inherit system;
           modules = [
-            ./devos.nix
+            ./vm.nix
             cfg.services
             {
               virtualisation.forwardPorts = map (p: {
