@@ -49,9 +49,9 @@
 
         # Packages installed in the VM
         packages = [
-          pkgs.btop
           # pkgs.claude-code
           pkgs.git
+          pkgs.vim
           pkgs.zellij
         ];
       };
