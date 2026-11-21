@@ -34,8 +34,15 @@
 
   fonts.fontconfig.enable = lib.mkDefault false;
 
+  # User
+  users.users.dev = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+  };
+  security.sudo.wheelNeedsPassword = false;
+
   # Getty
-  services.getty.autologinUser = "root";
+  services.getty.autologinUser = "dev";
   services.getty.helpLine = ''
 
     ╭──────────────────────────────────────────────╮
@@ -43,7 +50,7 @@
     │  DevMachine VM                               │
     │                                              │
     │  Project directory     /devmachine           │
-    │  Follow service logs   journalctl -f         │
+    │  Follow service logs   sudo journalctl -f    │
     │  Power off the VM      Ctrl-k                │
     │                                              │
     ╰──────────────────────────────────────────────╯
@@ -52,7 +59,7 @@
   system.stateVersion = "26.11";
 
   programs.bash.interactiveShellInit = ''
-    bind -x '"\C-k": poweroff'
+    bind -x '"\C-k": sudo poweroff'
 
     # Print boot time once boot has finished
     systemctl is-system-running --wait >/dev/null 2>&1
