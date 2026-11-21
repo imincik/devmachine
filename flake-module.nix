@@ -12,10 +12,10 @@ in
       ...
     }:
     let
-      cfg = config.devos;
+      cfg = config.devmachine;
     in
     {
-      options.devos = {
+      options.devmachine = {
         services = mkOption {
           type = types.deferredModule;
           default = { };
@@ -68,9 +68,9 @@ in
           default = true;
           description = ''
             Whether to share the project directory with the VM, mounted
-            read-write at `/devos`. The project directory is the git
+            read-write at `/devmachine`. The project directory is the git
             repository root or the current directory, and can be overridden
-            by the `DEVOS_PROJECT_DIR` environment variable.
+            by the `DEVMACHINE_PROJECT_DIR` environment variable.
           '';
         };
 
@@ -99,7 +99,7 @@ in
       };
 
       config = {
-        packages.devos-vm = mkVM {
+        packages.devmachine-vm = mkVM {
           inherit system;
           modules = [
             ./vm.nix
@@ -112,41 +112,41 @@ in
 
               # Source is expanded by the VM run script at start time
               virtualisation.sharedDirectories.project = lib.mkIf cfg.shareProjectDir {
-                source = ''"''${DEVOS_PROJECT_DIR:-$PWD}"'';
-                target = "/devos";
+                source = ''"''${DEVMACHINE_PROJECT_DIR:-$PWD}"'';
+                target = "/devmachine";
                 writable = true;
               };
             }
           ];
         };
 
-        packages.devos = pkgs.writeShellApplication {
-          name = "devos";
+        packages.dev = pkgs.writeShellApplication {
+          name = "dev";
           text = ''
             usage() {
               cat <<EOF
-            Usage: devos <command>
+            Usage: dev <command>
 
             Commands:
-              up      Start services VM (press Ctrl-k in VM to power off)
-              help    Show this help message
+              services  Start services VM (press Ctrl-k in VM to power off)
+              help      Show this help message
             EOF
             }
 
             case "''${1:-}" in
-              up)
+              services)
                 shift
-                if [ -z "''${DEVOS_PROJECT_DIR:-}" ]; then
-                  DEVOS_PROJECT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
-                  export DEVOS_PROJECT_DIR
+                if [ -z "''${DEVMACHINE_PROJECT_DIR:-}" ]; then
+                  DEVMACHINE_PROJECT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+                  export DEVMACHINE_PROJECT_DIR
                 fi
-                exec ${lib.getExe config.packages.devos-vm} "$@"
+                exec ${lib.getExe config.packages.devmachine-vm} "$@"
                 ;;
               "" | help | -h | --help)
                 usage
                 ;;
               *)
-                echo "devos: unknown command '$1'" >&2
+                echo "dev: unknown command '$1'" >&2
                 usage >&2
                 exit 1
                 ;;
@@ -156,7 +156,7 @@ in
 
         devShells.default = lib.mkDefault (
           pkgs.mkShell {
-            packages = [ config.packages.devos ] ++ cfg.packages;
+            packages = [ config.packages.dev ] ++ cfg.packages;
             env = cfg.environment;
             inherit (cfg) shellHook;
           }

@@ -2,7 +2,7 @@
   perSystem =
     { pkgs, ... }:
     {
-      devos = {
+      devmachine = {
         # NixOS configuration of services running in the VM
         services = {
           services.postgresql = {

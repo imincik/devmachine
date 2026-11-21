@@ -12,11 +12,11 @@
     flake-parts.lib.mkFlake { inherit inputs; } (
       { flake-parts-lib, ... }:
       let
-        devosLib = import ./mkvm.nix { inherit (nixpkgs) lib; };
-        devosModule = flake-parts-lib.importApply ./flake-module.nix { inherit (devosLib) mkVM; };
+        devmachineLib = import ./mkvm.nix { inherit (nixpkgs) lib; };
+        devmachineModule = flake-parts-lib.importApply ./flake-module.nix { inherit (devmachineLib) mkVM; };
       in
       {
-        imports = [ devosModule ];
+        imports = [ devmachineModule ];
 
         systems = [
           "x86_64-linux"
@@ -25,16 +25,16 @@
 
         flake = {
           flakeModules = {
-            default = devosModule;
-            devos = devosModule;
+            default = devmachineModule;
+            devmachine = devmachineModule;
           };
 
           templates.default = {
             path = ./templates/default;
-            description = "Project with services running in devos VM";
+            description = "Project with services running in devmachine VM";
           };
 
-          lib = devosLib;
+          lib = devmachineLib;
         };
 
         perSystem =

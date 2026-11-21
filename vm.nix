@@ -11,7 +11,7 @@
 
   virtualisation.graphics = false;
 
-  networking.hostName = lib.mkDefault "devos";
+  networking.hostName = lib.mkDefault "devmachine";
   networking.firewall.enable = false;
 
   documentation.nixos.enable = false;
@@ -21,9 +21,9 @@
 
     ╭──────────────────────────────────────────────╮
     │                                              │
-    │  DevOS VM                                    │
+    │  DevMachine VM                               │
     │                                              │
-    │  Project directory     /devos                │
+    │  Project directory     /devmachine           │
     │  Follow service logs   journalctl -f         │
     │  Power off the VM      Ctrl-k                │
     │                                              │

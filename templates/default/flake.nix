@@ -1,6 +1,6 @@
 {
   nixConfig = {
-    bash-prompt = "\\[\\033[1m\\][devos]\\[\\033\[m\\]\\040\\w >\\040";
+    bash-prompt = "\\[\\033[1m\\][devmachine]\\[\\033\[m\\]\\040\\w >\\040";
   };
 
   inputs = {
@@ -9,8 +9,9 @@
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
-    devos = {
-      url = "github:imincik/devos";
+    devmachine = {
+      # url = "github:imincik/devmachine";
+      url = "path:/home/imincik/Projects/nix/devos/code";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
     };
@@ -20,8 +21,8 @@
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
-        inputs.devos.flakeModules.default
-        ./devos.nix
+        inputs.devmachine.flakeModules.default
+        ./devmachine.nix
       ];
 
       systems = [
