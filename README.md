@@ -16,11 +16,23 @@ Then,
 
 All options are set in `perSystem.devmachine`:
 
-- `services` (NixOS module, default `{ }`) – NixOS configuration of the services VM
-- `forwardPorts` (list of ports, default `[ ]`) – ports forwarded from host to VM, e.g.
-  `5432` or `{ host = 8080; guest = 80; }`
-- `shareProjectDir` (bool, default `true`) – share project directory (git root
-  or current directory) with VM at `/devmachine`
-- `packages` (list of packages, default `[ ]`) – packages available in `nix develop`
-- `environment` (attrs of strings, default `{ }`) – environment variables set in `nix develop`
-- `shellHook` (lines, default `""`) – shell hook to run when entering `nix develop`
+- `services`
+  - Description: NixOS configuration (module) of the services VM
+  - Default: `{ }`
+- `forwardPorts`
+  - Description: ports forwarded from host to VM, e.g. `5432` or
+    `{ host = 8080; guest = 80; }`
+  - Default: `[ ]`
+- `shareProjectDir`
+  - Description: share project directory (git root or current directory) with
+    VM at `/devmachine`
+  - Default: `true`
+- `packages`
+  - Description: packages available in `nix develop`
+  - Default: `[ ]`
+- `environment`
+  - Description: environment variables set in `nix develop`
+  - Default: `{ }`
+- `shellHook`
+  - Description: shell hook to run when entering `nix develop`
+  - Default: `""`
