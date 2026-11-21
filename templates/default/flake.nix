@@ -1,4 +1,8 @@
 {
+  nixConfig = {
+    bash-prompt = "\\[\\033[1m\\][devos]\\[\\033\[m\\]\\040\\w >\\040";
+  };
+
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts = {
