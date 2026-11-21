@@ -6,33 +6,10 @@ Create a new project from the template:
 nix flake init -t github:imincik/devmachine
 ```
 
-or import the flake-parts module into an existing flake:
-
-```nix
-{
-  inputs.devmachine.url = "github:imincik/devmachine";
-
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [ inputs.devmachine.flakeModules.default ];
-      systems = [ "x86_64-linux" ];
-      perSystem = { pkgs, ... }: {
-        devmachine = {
-          services = { services.postgresql.enable = true; };
-          forwardPorts = [ 5432 ];
-          packages = [ pkgs.postgresql ];
-          environment.PG_URI = "postgres://localhost/postgres";
-          shellHook = ''echo "Welcome here ..."'';
-        };
-      };
-    };
-}
-```
-
 Then,
 
-1. run `nix run .#dev -- services` to start the services
-1. run `nix develop` to launch a shell environment containing packages
+1. run `nix run .#dev -- services` to start a VM with services
+1. run `nix develop` to launch a shell environment
 
 
 ## Options
