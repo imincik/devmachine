@@ -22,7 +22,7 @@ or import the flake-parts module into an existing flake:
           forwardPorts = [ 5432 ];
           packages = [ pkgs.postgresql ];
           environment.PG_URI = "postgres://localhost/postgres";
-          shellHook = ''echo "Run 'devos up' to start services."'';
+          shellHook = ''echo "Welcome here ..."'';
         };
       };
     };
