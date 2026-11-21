@@ -12,7 +12,7 @@ Then,
 1. run `nix develop` to launch a shell environment
 
 
-## Options
+## Configuration Options
 
 All options are set in `perSystem.devmachine`:
 
