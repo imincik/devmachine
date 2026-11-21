@@ -1,3 +1,16 @@
+# devmachine
+
+Declaratively configure development environment for your software project.
+
+
+## Features
+
+- **Shell environment** – reproducible, not isolated environment containing
+  packages (`dev shell`)
+- **Composable VM** – reproducible, isolated environment containing packages and
+  services, with coding agent isolation (`dev vm`)
+
+
 ## Quick Start
 
 Add `devmachine` configuration to your project:
