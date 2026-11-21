@@ -32,7 +32,7 @@ or import the flake-parts module into an existing flake:
 Then,
 
 1. run `nix run .#devos -- up` to start the services
-1. `nix develop` to launch a shell environment containing packages
+1. run `nix develop` to launch a shell environment containing packages
 
 
 ## Options
