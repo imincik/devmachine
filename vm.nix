@@ -49,7 +49,7 @@
     │                                              │
     │  DevMachine VM                               │
     │                                              │
-    │  Project directory     /devmachine           │
+    │  Project directory     /project              │
     │  Follow service logs   sudo journalctl -f    │
     │  Power off the VM      Ctrl-k                │
     │                                              │

@@ -27,7 +27,7 @@ Then,
   - Example: `[ 5432 { host = 8080; guest = 80; } ]`
 - `vm.shareProjectDir`
   - Description: share project directory (git root or current directory) with
-    VM at `/devmachine`
+    VM at `/project`
   - Default: `true`
   - Example: `false`
 - `vm.packages`

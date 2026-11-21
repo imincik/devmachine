@@ -4,7 +4,7 @@ let
   inherit (lib) mkOption types;
 
   # Mount point of the shared project directory in the VM
-  mountPoint = "/devmachine";
+  mountPoint = "/project";
 in
 {
   options.perSystem = flake-parts-lib.mkPerSystemOption (
