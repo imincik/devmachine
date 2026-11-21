@@ -1,7 +1,19 @@
+{ inputs, ... }:
 {
   perSystem =
-    { pkgs, ... }:
     {
+      lib,
+      pkgs,
+      system,
+      ...
+    }:
+    {
+      # Allow unfree packages used in this configuration
+      _module.args.pkgs = import inputs.nixpkgs {
+        inherit system;
+        config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "claude-code" ];
+      };
+
       devmachine.vm = {
         # NixOS configuration of services running in the VM
         services = {
@@ -36,7 +48,12 @@
         forwardPorts = [ 5432 ];
 
         # Packages installed in the VM
-        packages = [ pkgs.btop ];
+        packages = [
+          pkgs.btop
+          pkgs.claude-code
+          pkgs.git
+          pkgs.helix
+        ];
       };
 
       devmachine.shell = {
