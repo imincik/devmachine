@@ -65,8 +65,10 @@
     │  Follow service logs   sudo journalctl -f            │
     │  Power off the VM      Ctrl-k                        │
     │                                                      │
-    │  Run `nix run .#dev -- ssh` on your host to connect  │
-    │  with better performing terminal.                    │
+    │  Run following command on your host to connect with  │
+    │  better performing terminal:                         │
+    │                                                      │
+    │    nix run .#dev -- ssh                              │
     │                                                      │
     ╰──────────────────────────────────────────────────────╯
   '';
