@@ -8,8 +8,8 @@ nix flake init -t github:imincik/devmachine
 
 Then,
 
-1. run `nix run .#dev -- services` to start a VM with services
-1. run `nix develop` to launch a shell environment
+1. run `nix run .#dev -- vm` to start a VM with services
+1. run `nix run .#dev -- shell` to launch a shell environment
 
 Tip: you can launch `dev services` inside `nix develop` as well to launch
 services. This will start VM faster because Nix doesn't need to evaluate VM
@@ -43,7 +43,7 @@ configuration again.
 - `shellHook`
   - Description: shell hook to run when entering `nix develop`
   - Default: `""`
-  - Example: `''echo "Run 'dev services' to start services."''`
+  - Example: `''echo "Welcome in this shell environment!"''`
 
 
 ## Credits
