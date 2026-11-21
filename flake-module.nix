@@ -2,6 +2,9 @@
 { lib, flake-parts-lib, ... }:
 let
   inherit (lib) mkOption types;
+
+  # Mount point of the shared project directory in the VM
+  mountPoint = "/devmachine";
 in
 {
   options.perSystem = flake-parts-lib.mkPerSystemOption (
@@ -68,7 +71,7 @@ in
           default = true;
           description = ''
             Whether to share the project directory with the VM, mounted
-            read-write at `/devmachine`. The project directory is the git
+            read-write at `${mountPoint}`. The project directory is the git
             repository root or the current directory, and can be overridden
             by the `DEVMACHINE_PROJECT_DIR` environment variable.
           '';
@@ -113,7 +116,7 @@ in
               # Source is expanded by the VM run script at start time
               virtualisation.sharedDirectories.project = lib.mkIf cfg.shareProjectDir {
                 source = ''"''${DEVMACHINE_PROJECT_DIR:-$PWD}"'';
-                target = "/devmachine";
+                target = mountPoint;
                 writable = true;
               };
             }
