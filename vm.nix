@@ -32,7 +32,7 @@
 
   system.stateVersion = "26.11";
 
-  programs.bash.shellInit = ''
+  programs.bash.interactiveShellInit = ''
     bind -x '"\C-k": poweroff'
   '';
 }
