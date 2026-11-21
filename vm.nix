@@ -18,17 +18,13 @@
   # Boot speed and closure size optimizations
   virtualisation.cores = lib.mkDefault 2;
   virtualisation.memorySize = lib.mkDefault 2048;
-  virtualisation.writableStore = lib.mkDefault false;
 
   nix.enable = lib.mkDefault false;
 
   networking.useNetworkd = lib.mkDefault true;
   systemd.network.wait-online.enable = lib.mkDefault false;
 
-  boot.kernelParams = [
-    "quiet"
-    "udev.log_level=3"
-  ];
+  boot.kernelParams = [ "udev.log_level=3" ];
   boot.consoleLogLevel = lib.mkDefault 3;
   boot.initrd.checkJournalingFS = lib.mkDefault false;
 
