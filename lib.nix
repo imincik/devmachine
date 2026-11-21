@@ -1,9 +1,8 @@
 { lib, ... }:
 {
   mkVM =
-    {
-      system ? "x86_64-linux",
-      modules,
-    }:
-    (lib.nixosSystem { inherit system modules; }).config.system.build.vm;
+    { system, modules }:
+    (lib.nixosSystem {
+      modules = [ { nixpkgs.hostPlatform = system; } ] ++ modules;
+    }).config.system.build.vm;
 }
