@@ -1,8 +1,7 @@
-{ nixpkgs }:
+{ mkVM }:
 { lib, flake-parts-lib, ... }:
 let
   inherit (lib) mkOption types;
-  inherit (import ./mkvm.nix { inherit (nixpkgs) lib; }) mkVM;
 in
 {
   options.perSystem = flake-parts-lib.mkPerSystemOption (
