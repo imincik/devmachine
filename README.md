@@ -18,30 +18,39 @@ configuration again.
 
 ## Configuration Options
 
-- `services`
+### VM
+
+- `vm.services`
   - Description: NixOS configuration (module) of the services VM
   - Default: `{ }`
   - Example: `{ services.postgresql.enable = true; }`
-- `forwardPorts`
+- `vm.forwardPorts`
   - Description: ports forwarded from host to VM, either a port number (same
     port on host and VM) or `{ host = <port>; guest = <port>; }`
   - Default: `[ ]`
   - Example: `[ 5432 { host = 8080; guest = 80; } ]`
-- `shareProjectDir`
+- `vm.shareProjectDir`
   - Description: share project directory (git root or current directory) with
     VM at `/devmachine`
   - Default: `true`
   - Example: `false`
-- `packages`
-  - Description: packages available in `nix develop`
+- `vm.packages`
+  - Description: packages installed in the VM
+  - Default: `[ ]`
+  - Example: `[ pkgs.htop ]`
+
+### Shell
+
+- `shell.packages`
+  - Description: packages available in `dev shell`
   - Default: `[ ]`
   - Example: `[ pkgs.postgresql pkgs.mongosh ]`
-- `environment`
-  - Description: environment variables set in `nix develop`
+- `shell.environment`
+  - Description: environment variables set in `dev shell`
   - Default: `{ }`
   - Example: `{ PG_URI = "postgres://app@localhost/app"; }`
-- `shellHook`
-  - Description: shell hook to run when entering `nix develop`
+- `shell.shellHook`
+  - Description: shell hook to run when entering `dev shell`
   - Default: `""`
   - Example: `''echo "Welcome in this shell environment!"''`
 

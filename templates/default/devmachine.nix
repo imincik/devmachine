@@ -2,7 +2,7 @@
   perSystem =
     { pkgs, ... }:
     {
-      devmachine = {
+      devmachine.vm = {
         # NixOS configuration of services running in the VM
         services = {
           services.postgresql = {
@@ -35,15 +35,20 @@
         # Ports forwarded from the host to the VM
         forwardPorts = [ 5432 ];
 
-        # Packages available in `nix develop`
+        # Packages installed in the VM
+        packages = [ pkgs.btop ];
+      };
+
+      devmachine.shell = {
+        # Packages available in the shell environment
         packages = [ pkgs.postgresql ];
 
-        # Environment variables set in `nix develop`
+        # Environment variables set in the shell environment
         environment = {
           PG_URI = "postgres://app@localhost/app";
         };
 
-        # Shell hook run when entering `nix develop`
+        # Shell hook run when entering the shell environment
         shellHook = ''
           echo -e "\nRun 'psql -h localhost -U postgres' to connect to database."
         '';
