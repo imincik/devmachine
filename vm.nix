@@ -32,11 +32,26 @@
   fonts.fontconfig.enable = lib.mkDefault false;
 
   # User
+  users.mutableUsers = false;
   users.users.dev = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
+    hashedPassword = "";
   };
   security.sudo.wheelNeedsPassword = false;
+
+  # SSH access with empty password (port is forwarded on 127.0.0.1 only)
+  security.pam.services.sshd.allowNullPassword = true;
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = true;
+      KbdInteractiveAuthentication = false;
+      PermitEmptyPasswords = "yes";
+      UseDns = false;
+    };
+  };
 
   # Getty
   services.getty.autologinUser = "dev";
@@ -49,6 +64,8 @@
     │  Project directory     /project              │
     │  Follow service logs   sudo journalctl -f    │
     │  Power off the VM      Ctrl-k                │
+    │                                              │
+    │  Faster terminal       dev ssh (on host)     │
     │                                              │
     ╰──────────────────────────────────────────────╯
   '';

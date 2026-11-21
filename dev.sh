@@ -3,9 +3,10 @@ usage() {
 Usage: dev <command>
 
 Commands:
-  vm     Start VM with services (press Ctrl-k in VM to power off)
-  shell  Launch shell environment
-  help   Show this help message
+  vm      Start VM with services (press Ctrl-k in VM to power off)
+  ssh     Connect to running VM over SSH (faster terminal)
+  shell   Launch shell environment
+  help    Show this help message
 EOF
 }
 
@@ -17,6 +18,14 @@ case "${1:-}" in
       export DEVMACHINE_PROJECT_DIR
     fi
     exec "$DEVMACHINE_VM" "$@"
+    ;;
+  ssh)
+    shift
+    exec ssh -p "$DEVMACHINE_SSH_PORT" \
+      -o StrictHostKeyChecking=no \
+      -o UserKnownHostsFile=/dev/null \
+      -o LogLevel=ERROR \
+      dev@127.0.0.1 "$@"
     ;;
   shell)
     shift

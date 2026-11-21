@@ -67,6 +67,16 @@ in
             '';
           };
 
+          sshPort = mkOption {
+            type = types.port;
+            default = 2222;
+            example = 2200;
+            description = ''
+              Host port, bound to 127.0.0.1, forwarded to SSH in the VM. Used by
+              `dev ssh`.
+            '';
+          };
+
           shareProjectDir = mkOption {
             type = types.bool;
             default = true;
@@ -149,10 +159,18 @@ in
               virtualisation.memorySize = cfg.vm.memorySize;
               virtualisation.diskSize = cfg.vm.diskSize;
 
-              virtualisation.forwardPorts = map (p: {
-                host.port = p.host;
-                guest.port = p.guest;
-              }) cfg.vm.forwardPorts;
+              virtualisation.forwardPorts =
+                map (p: {
+                  host.port = p.host;
+                  guest.port = p.guest;
+                }) cfg.vm.forwardPorts
+                ++ [
+                  {
+                    host.address = "127.0.0.1";
+                    host.port = cfg.vm.sshPort;
+                    guest.port = 22;
+                  }
+                ];
 
               # Source is expanded by the VM run script at start time
               virtualisation.sharedDirectories.project = lib.mkIf cfg.vm.shareProjectDir {
@@ -166,7 +184,11 @@ in
 
         packages.dev = pkgs.writeShellApplication {
           name = "dev";
-          runtimeEnv.DEVMACHINE_VM = lib.getExe config.packages.devmachine-vm;
+          runtimeInputs = [ pkgs.openssh ];
+          runtimeEnv = {
+            DEVMACHINE_VM = lib.getExe config.packages.devmachine-vm;
+            DEVMACHINE_SSH_PORT = toString cfg.vm.sshPort;
+          };
           text = builtins.readFile ./dev.sh;
         };
 

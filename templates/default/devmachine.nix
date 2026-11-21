@@ -53,6 +53,7 @@
           pkgs.claude-code
           pkgs.git
           pkgs.helix
+          pkgs.zellij
         ];
       };
 
