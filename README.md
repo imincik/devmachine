@@ -14,8 +14,6 @@ Then,
 
 ## Configuration Options
 
-All options are set in `perSystem.devmachine`:
-
 - `services`
   - Description: NixOS configuration (module) of the services VM
   - Default: `{ }`
