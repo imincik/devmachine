@@ -13,13 +13,22 @@
   documentation.nixos.enable = false;
 
   services.getty.autologinUser = "root";
+  # Escape sequences are interpreted by agetty, see `man agetty`
   services.getty.helpLine = ''
 
-    ======================================
-      DevOS VM
-
-      Press Ctrl-k to power off the VM.
-    ======================================
+    ╭──────────────────────────────────────────────╮
+    │                                              │
+    │  \e{cyan}██████╗ ███████╗██╗   ██╗ ██████╗ ███████╗\e{reset}  │
+    │  \e{cyan}██╔══██╗██╔════╝██║   ██║██╔═══██╗██╔════╝\e{reset}  │
+    │  \e{cyan}██║  ██║█████╗  ██║   ██║██║   ██║███████╗\e{reset}  │
+    │  \e{cyan}██║  ██║██╔══╝  ╚██╗ ██╔╝██║   ██║╚════██║\e{reset}  │
+    │  \e{cyan}██████╔╝███████╗ ╚████╔╝ ╚██████╔╝███████║\e{reset}  │
+    │  \e{cyan}╚═════╝ ╚══════╝  ╚═══╝   ╚═════╝ ╚══════╝\e{reset}  │
+    │                                              │
+    │  Follow service logs   \e{green}journalctl -f\e{reset}         │
+    │  Power off the VM      \e{green}Ctrl-k\e{reset}                │
+    │                                              │
+    ╰──────────────────────────────────────────────╯
   '';
 
   system.stateVersion = "26.11";
