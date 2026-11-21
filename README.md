@@ -43,6 +43,7 @@ All options are set in `perSystem.devos`:
 | ------------- | ------------------- | -------------------------------------------------- |
 | `services`    | NixOS module        | NixOS configuration of the services VM             |
 | `forwardPorts`| list of ports       | Ports forwarded from host to VM (`5432` or `{ host = 8080; guest = 80; }`) |
+| `shareProjectDir` | bool (default `true`) | Share project directory (git root or current directory) with VM at `/devos` |
 | `packages`    | list of packages    | Packages available in `nix develop`                |
 | `environment` | attrs of strings    | Environment variables set in `nix develop`         |
 | `shellHook`   | lines               | Shell hook to run when entering `nix develop`      |

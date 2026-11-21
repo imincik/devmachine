@@ -13,20 +13,15 @@
   documentation.nixos.enable = false;
 
   services.getty.autologinUser = "root";
-  # Escape sequences are interpreted by agetty, see `man agetty`
   services.getty.helpLine = ''
 
     ╭──────────────────────────────────────────────╮
     │                                              │
-    │  \e{cyan}██████╗ ███████╗██╗   ██╗ ██████╗ ███████╗\e{reset}  │
-    │  \e{cyan}██╔══██╗██╔════╝██║   ██║██╔═══██╗██╔════╝\e{reset}  │
-    │  \e{cyan}██║  ██║█████╗  ██║   ██║██║   ██║███████╗\e{reset}  │
-    │  \e{cyan}██║  ██║██╔══╝  ╚██╗ ██╔╝██║   ██║╚════██║\e{reset}  │
-    │  \e{cyan}██████╔╝███████╗ ╚████╔╝ ╚██████╔╝███████║\e{reset}  │
-    │  \e{cyan}╚═════╝ ╚══════╝  ╚═══╝   ╚═════╝ ╚══════╝\e{reset}  │
+    │  DevOS VM                                    │
     │                                              │
-    │  Follow service logs   \e{green}journalctl -f\e{reset}         │
-    │  Power off the VM      \e{green}Ctrl-k\e{reset}                │
+    │  Project directory     /devos                │
+    │  Follow service logs   journalctl -f         │
+    │  Power off the VM      Ctrl-k                │
     │                                              │
     ╰──────────────────────────────────────────────╯
   '';

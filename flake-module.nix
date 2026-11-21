@@ -64,6 +64,17 @@ in
           '';
         };
 
+        shareProjectDir = mkOption {
+          type = types.bool;
+          default = true;
+          description = ''
+            Whether to share the project directory with the VM, mounted
+            read-write at `/devos`. The project directory is the git
+            repository root or the current directory, and can be overridden
+            by the `DEVOS_PROJECT_DIR` environment variable.
+          '';
+        };
+
         packages = mkOption {
           type = types.listOf types.package;
           default = [ ];
@@ -99,6 +110,13 @@ in
                 host.port = p.host;
                 guest.port = p.guest;
               }) cfg.forwardPorts;
+
+              # Source is expanded by the VM run script at start time
+              virtualisation.sharedDirectories.project = lib.mkIf cfg.shareProjectDir {
+                source = ''"''${DEVOS_PROJECT_DIR:-$PWD}"'';
+                target = "/devos";
+                writable = true;
+              };
             }
           ];
         };
@@ -119,6 +137,10 @@ in
             case "''${1:-}" in
               up)
                 shift
+                if [ -z "''${DEVOS_PROJECT_DIR:-}" ]; then
+                  DEVOS_PROJECT_DIR=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+                  export DEVOS_PROJECT_DIR
+                fi
                 exec ${lib.getExe config.packages.devos-vm} "$@"
                 ;;
               "" | help | -h | --help)
