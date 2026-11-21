@@ -53,7 +53,8 @@
     ╰──────────────────────────────────────────────╯
   '';
 
-  system.stateVersion = "26.11";
+  # Use a modern terminal type
+  systemd.services."serial-getty@".environment.TERM = lib.mkDefault "xterm-256color";
 
   programs.bash.interactiveShellInit = ''
     bind -x '"\C-k": sudo poweroff'
@@ -62,4 +63,6 @@
     systemctl is-system-running --wait >/dev/null 2>&1
     systemd-analyze | head -1
   '';
+
+  system.stateVersion = "26.11";
 }
