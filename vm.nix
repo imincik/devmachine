@@ -56,12 +56,16 @@
   # Use a modern terminal type
   systemd.services."serial-getty@".environment.TERM = lib.mkDefault "xterm-256color";
 
+  # Execute after login
   programs.bash.interactiveShellInit = ''
     bind -x '"\C-k": sudo poweroff'
 
     # Print boot time once boot has finished
     systemctl is-system-running --wait >/dev/null 2>&1
     systemd-analyze | head -1
+
+    # Go directly to the project directory
+    cd /project
   '';
 
   system.stateVersion = "26.11";
