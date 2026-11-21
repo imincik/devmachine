@@ -70,6 +70,10 @@ Then,
   - Default: `""`
   - Example: `''echo "Welcome in this shell environment!"''`
 
+For more configuration examples see the [templates](templates/) directory. A
+specific template can be used with
+`nix flake init -t github:imincik/devmachine#<template>`, e.g. `#postgres`.
+
 
 ## Credits
 
