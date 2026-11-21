@@ -11,6 +11,10 @@ Then,
 1. run `nix run .#dev -- services` to start a VM with services
 1. run `nix develop` to launch a shell environment
 
+Tip: you can launch `dev services` inside `nix develop` as well to launch
+services. This will start VM faster because Nix doesn't need to evaluate VM
+configuration again.
+
 
 ## Configuration Options
 
