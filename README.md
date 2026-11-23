@@ -21,9 +21,10 @@ nix flake init -t github:imincik/devmachine
 
 Then,
 
-1. run `nix run .#dev -- vm` or `nix develop` + `dev vm` to start a VM with
-   services in background and connect to it over SSH. Running it again connects
-   to the already running VM
+1. run `nix run .#dev -- vm --reload` or `nix develop` + `dev vm --reload` to
+   start a VM with services in background and connect to it over SSH. Changes
+   of `devmachine.nix` are applied to the running VM automatically. Running it
+   again connects to the already running VM
 1. run `nix run .#dev -- shell` or `nix develop` to launch a shell environment
 
 Run `nix run .#dev -- --help` for a full list of `dev` command options

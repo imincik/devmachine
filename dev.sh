@@ -3,7 +3,7 @@ usage() {
 Usage: dev <command>
 
 Commands:
-  vm [--console|--status]
+  vm [--console|--status|--reload]
                   Start VM with services in background (if not running) and
                   connect to it over SSH
 
@@ -11,6 +11,11 @@ Commands:
                   console instead
 
                   --status reports VM status
+
+                  --reload also watches devmachine.nix in background (until VM
+                  stops) and on every change builds VM configuration and
+                  switches running VM to it, without restart (log:
+                  devmachine-reload.log, results in VM journal)
 
   shell           Launch shell environment
 
@@ -23,6 +28,10 @@ vm_log=devmachine-vm.log
 
 # QEMU pidfile, absolute because VM run script changes directory
 vm_pidfile=$PWD/devmachine-vm.pid
+
+# Log and pidfile of configuration watcher started by `vm --reload`
+reload_log=devmachine-reload.log
+reload_pidfile=$PWD/devmachine-reload.pid
 
 set_project_dir() {
   if [ -z "${DEVMACHINE_PROJECT_DIR:-}" ]; then
@@ -86,6 +95,69 @@ wait_for_ssh() {
   echo "ready"
 }
 
+# Running VM sees new configuration via shared host Nix store
+reload_vm() {
+  local system
+
+  echo "Building VM configuration ..."
+  system=$(nix build .#devmachine-system --no-link --print-out-paths) || return 1
+
+  if ! vm_ssh -o BatchMode=yes dev@127.0.0.1 test -e "$system"; then
+    echo "dev: new configuration is not available in VM Nix store" \
+      "(is vm.isolateNixStore enabled?), restart VM to apply it" >&2
+    return 1
+  fi
+
+  echo "Switching VM to new configuration ..."
+  vm_ssh -o BatchMode=yes dev@127.0.0.1 sudo "$system/bin/switch-to-configuration" test
+}
+
+# Report result to VM journal, so it is visible without watching log on host
+reload_once() {
+  local msg
+
+  echo "--- $(date '+%F %T') devmachine.nix changed"
+  if reload_vm; then
+    msg="switched to new configuration"
+  else
+    msg="reload failed, see $reload_log on host"
+  fi
+  echo "--- $msg"
+  vm_ssh -o BatchMode=yes dev@127.0.0.1 logger -t devmachine-reload "$msg" || true
+}
+
+watcher_running() {
+  local pid
+  pid=$(cat "$reload_pidfile" 2>/dev/null) || return 1
+  [[ "$(tr '\0' ' ' <"/proc/$pid/cmdline" 2>/dev/null)" == *" vm --reload"* ]]
+}
+
+start_watcher() {
+  if watcher_running; then
+    return
+  fi
+
+  echo "Watching devmachine.nix for changes in background (log: $reload_log)"
+  DEVMACHINE_WATCH=1 setsid "$0" vm --reload </dev/null >>"$reload_log" 2>&1 &
+  echo $! >"$reload_pidfile"
+}
+
+# Watch directory, editors replace file on save which breaks file watch.
+# Queue changes made during reload, so latest configuration is applied.
+# On change, this script is run again with DEVMACHINE_RELOAD set.
+run_watcher() {
+  # Not local, EXIT trap runs after function returns
+  DEVMACHINE_RELOAD=1 watchexec --postpone --on-busy-update=queue --shell=none \
+    --watch . --filter devmachine.nix -- "$0" vm --reload &
+  watchexec_pid=$!
+  trap 'kill "$watchexec_pid" 2>/dev/null || true; rm -f "$reload_pidfile"' EXIT
+
+  # Stop watching when VM stops
+  while vm_running && kill -0 "$watchexec_pid" 2>/dev/null; do
+    sleep 2
+  done
+}
+
 case "${1:-}" in
   vm)
     shift
@@ -103,8 +175,25 @@ case "${1:-}" in
       fi
       exit
     fi
+    reload=
+    if [ "${1:-}" = "--reload" ]; then
+      shift
+      # Internal invocations by the watcher
+      if [ -n "${DEVMACHINE_RELOAD:-}" ]; then
+        reload_once
+        exit
+      fi
+      if [ -n "${DEVMACHINE_WATCH:-}" ]; then
+        run_watcher
+        exit
+      fi
+      reload=1
+    fi
     launch_vm
     wait_for_ssh
+    if [ -n "$reload" ]; then
+      start_watcher
+    fi
     vm_ssh dev@127.0.0.1 "$@"
     ;;
   shell)

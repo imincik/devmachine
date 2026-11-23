@@ -13,7 +13,9 @@
       { flake-parts-lib, ... }:
       let
         devmachineLib = import ./lib.nix { inherit (nixpkgs) lib; };
-        devmachineModule = flake-parts-lib.importApply ./flake-module.nix { inherit (devmachineLib) mkVM; };
+        devmachineModule = flake-parts-lib.importApply ./flake-module.nix {
+          inherit (devmachineLib) mkSystem;
+        };
       in
       {
         imports = [ devmachineModule ];
