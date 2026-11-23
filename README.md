@@ -50,6 +50,12 @@ Then,
     VM at `/project`
   - Default: `true`
   - Example: `false`
+- `vm.isolateNixStore`
+  - Description: provide VM with a Nix store image containing only the VM
+    closure instead of sharing the whole host Nix store (the image is built
+    every time the VM is started)
+  - Default: `false`
+  - Example: `true`
 - `vm.packages`
   - Description: packages installed in the VM
   - Default: `[ ]`

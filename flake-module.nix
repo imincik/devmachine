@@ -88,6 +88,16 @@ in
             '';
           };
 
+          isolateNixStore = mkOption {
+            type = types.bool;
+            default = false;
+            description = ''
+              Whether to provide the VM with a Nix store image containing only
+              the VM closure, instead of sharing the whole host Nix store. The
+              image is built every time the VM is started.
+            '';
+          };
+
           packages = mkOption {
             type = types.listOf types.package;
             default = [ ];
@@ -158,6 +168,7 @@ in
               virtualisation.cores = cfg.vm.cores;
               virtualisation.memorySize = cfg.vm.memorySize;
               virtualisation.diskSize = cfg.vm.diskSize;
+              virtualisation.useNixStoreImage = cfg.vm.isolateNixStore;
 
               virtualisation.forwardPorts =
                 map (p: {
