@@ -1,4 +1,4 @@
-{ mkVM }:
+{ mkSystem }:
 { lib, flake-parts-lib, ... }:
 let
   inherit (lib) mkOption types;
@@ -16,6 +16,42 @@ in
     }:
     let
       cfg = config.devmachine;
+
+      vmSystem = mkSystem {
+        inherit system;
+        modules = [
+          ./vm.nix
+          cfg.vm.services
+          {
+            environment.systemPackages = cfg.vm.packages;
+
+            virtualisation.cores = cfg.vm.cores;
+            virtualisation.memorySize = cfg.vm.memorySize;
+            virtualisation.diskSize = cfg.vm.diskSize;
+            virtualisation.useNixStoreImage = cfg.vm.isolateNixStore;
+
+            virtualisation.forwardPorts =
+              map (p: {
+                host.port = p.host;
+                guest.port = p.guest;
+              }) cfg.vm.forwardPorts
+              ++ [
+                {
+                  host.address = "127.0.0.1";
+                  host.port = cfg.vm.sshPort;
+                  guest.port = 22;
+                }
+              ];
+
+            # Source is expanded by the VM run script at start time
+            virtualisation.sharedDirectories.project = lib.mkIf cfg.vm.shareProjectDir {
+              source = ''"''${DEVMACHINE_PROJECT_DIR:-$PWD}"'';
+              target = mountPoint;
+              writable = true;
+            };
+          }
+        ];
+      };
     in
     {
       options.devmachine = {
@@ -157,41 +193,10 @@ in
       };
 
       config = {
-        packages.devmachine-vm = mkVM {
-          inherit system;
-          modules = [
-            ./vm.nix
-            cfg.vm.services
-            {
-              environment.systemPackages = cfg.vm.packages;
+        packages.devmachine-vm = vmSystem.config.system.build.vm;
 
-              virtualisation.cores = cfg.vm.cores;
-              virtualisation.memorySize = cfg.vm.memorySize;
-              virtualisation.diskSize = cfg.vm.diskSize;
-              virtualisation.useNixStoreImage = cfg.vm.isolateNixStore;
-
-              virtualisation.forwardPorts =
-                map (p: {
-                  host.port = p.host;
-                  guest.port = p.guest;
-                }) cfg.vm.forwardPorts
-                ++ [
-                  {
-                    host.address = "127.0.0.1";
-                    host.port = cfg.vm.sshPort;
-                    guest.port = 22;
-                  }
-                ];
-
-              # Source is expanded by the VM run script at start time
-              virtualisation.sharedDirectories.project = lib.mkIf cfg.vm.shareProjectDir {
-                source = ''"''${DEVMACHINE_PROJECT_DIR:-$PWD}"'';
-                target = mountPoint;
-                writable = true;
-              };
-            }
-          ];
-        };
+        # Used by `dev vm --reload` to switch running VM to new configuration
+        packages.devmachine-system = vmSystem.config.system.build.toplevel;
 
         packages.dev = pkgs.writeShellApplication {
           name = "dev";
@@ -199,6 +204,7 @@ in
             pkgs.coreutils
             pkgs.openssh
             pkgs.util-linux
+            pkgs.watchexec
           ];
           runtimeEnv = {
             DEVMACHINE_VM = lib.getExe config.packages.devmachine-vm;

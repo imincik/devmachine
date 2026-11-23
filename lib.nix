@@ -1,8 +1,10 @@
 { lib, ... }:
-{
-  mkVM =
+rec {
+  mkSystem =
     { system, modules }:
-    (lib.nixosSystem {
+    lib.nixosSystem {
       modules = [ { nixpkgs.hostPlatform = system; } ] ++ modules;
-    }).config.system.build.vm;
+    };
+
+  mkVM = args: (mkSystem args).config.system.build.vm;
 }

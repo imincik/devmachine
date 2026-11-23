@@ -17,6 +17,17 @@
       devmachine.vm = {
         # NixOS configuration of services running in the VM
         services = {
+          # Test service, follow its output with `journalctl -fu hello`
+          systemd.services.hello = {
+            description = "Hello test service";
+            wantedBy = [ "multi-user.target" ];
+            script = ''
+              while true; do
+                echo "Hello from devmachine"
+                sleep 10
+              done
+            '';
+          };
         };
 
         # Ports forwarded from the host to the VM
