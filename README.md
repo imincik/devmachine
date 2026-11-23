@@ -21,9 +21,9 @@ nix flake init -t github:imincik/devmachine
 
 Then,
 
-1. run `nix run .#dev -- vm` or `nix develop` + `dev vm` to start a VM with services
-1. run `nix run .#dev -- ssh` or `dev ssh` in another terminal to connect
-   to the running VM over SSH (faster terminal than the VM console)
+1. run `nix run .#dev -- vm` or `nix develop` + `dev vm` to start a VM with
+   services in background and connect to it over SSH. Running it again connects
+   to the already running VM
 1. run `nix run .#dev -- shell` or `nix develop` to launch a shell environment
 
 
@@ -42,7 +42,7 @@ Then,
   - Example: `[ 5432 { host = 8080; guest = 80; } ]`
 - `vm.sshPort`
   - Description: host port (bound to `127.0.0.1`) forwarded to SSH in VM, used
-    by `dev ssh`
+    by `dev vm`
   - Default: `2222`
   - Example: `2200`
 - `vm.shareProjectDir`

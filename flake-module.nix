@@ -73,7 +73,7 @@ in
             example = 2200;
             description = ''
               Host port, bound to 127.0.0.1, forwarded to SSH in the VM. Used by
-              `dev ssh`.
+              `dev vm`.
             '';
           };
 
@@ -184,7 +184,11 @@ in
 
         packages.dev = pkgs.writeShellApplication {
           name = "dev";
-          runtimeInputs = [ pkgs.openssh ];
+          runtimeInputs = [
+            pkgs.coreutils
+            pkgs.openssh
+            pkgs.util-linux
+          ];
           runtimeEnv = {
             DEVMACHINE_VM = lib.getExe config.packages.devmachine-vm;
             DEVMACHINE_SSH_PORT = toString cfg.vm.sshPort;
