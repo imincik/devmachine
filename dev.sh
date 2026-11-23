@@ -3,16 +3,26 @@ usage() {
 Usage: dev <command>
 
 Commands:
-  vm [--console]  Start VM with services in background (if not running) and
-                  connect to it over SSH, --console starts VM in foreground
-                  and connects to its emulated console instead
+  vm [--console|--status]
+                  Start VM with services in background (if not running) and
+                  connect to it over SSH
+
+                  --console starts VM in foreground and connects to its emulated
+                  console instead
+
+                  --status reports VM status
+
   shell           Launch shell environment
+
   help            Show this help message
 EOF
 }
 
 # Console log of VM started in background
 vm_log=devmachine-vm.log
+
+# QEMU pidfile, absolute because VM run script changes directory
+vm_pidfile=$PWD/devmachine-vm.pid
 
 set_project_dir() {
   if [ -z "${DEVMACHINE_PROJECT_DIR:-}" ]; then
@@ -29,17 +39,25 @@ vm_ssh() {
     "$@"
 }
 
-# QEMU opens forwarded port as soon as VM is started
-ssh_port_open() {
-  (exec 3<>"/dev/tcp/127.0.0.1/$DEVMACHINE_SSH_PORT") 2>/dev/null
+prepare_vm() {
+  set_project_dir
+  QEMU_OPTS="${QEMU_OPTS:-} -pidfile $vm_pidfile"
+  export QEMU_OPTS
+}
+
+# Pidfile can be left behind if VM crashes, check process is QEMU
+vm_running() {
+  local pid
+  pid=$(cat "$vm_pidfile" 2>/dev/null) || return 1
+  [[ "$(readlink "/proc/$pid/exe" 2>/dev/null)" == *qemu-system-* ]]
 }
 
 launch_vm() {
-  if ssh_port_open; then
+  if vm_running; then
     return
   fi
 
-  set_project_dir
+  prepare_vm
   echo "Starting VM in background (console log: $vm_log)"
   # Forward journal to console, otherwise log stops updating after boot
   QEMU_KERNEL_PARAMS="${QEMU_KERNEL_PARAMS:-} systemd.journald.forward_to_console=1" \
@@ -73,8 +91,17 @@ case "${1:-}" in
     shift
     if [ "${1:-}" = "--console" ]; then
       shift
-      set_project_dir
+      prepare_vm
       exec "$DEVMACHINE_VM" "$@"
+    fi
+    if [ "${1:-}" = "--status" ]; then
+      if vm_running; then
+        echo "VM is running (pid $(cat "$vm_pidfile"))"
+      else
+        echo "VM is stopped"
+        exit 1
+      fi
+      exit
     fi
     launch_vm
     wait_for_ssh
