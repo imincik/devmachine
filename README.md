@@ -26,6 +26,8 @@ Then,
    to the already running VM
 1. run `nix run .#dev -- shell` or `nix develop` to launch a shell environment
 
+Run `nix run .#dev -- --help` for a full list of `dev` command options
+
 
 ## Configuration Options
 
