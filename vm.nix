@@ -82,7 +82,7 @@
 
     # Print boot time once boot has finished
     systemctl is-system-running --wait >/dev/null 2>&1
-    systemd-analyze | head -1
+    systemd-analyze time | head -1
 
     # Go directly to the project directory
     cd /project
