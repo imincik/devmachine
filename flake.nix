@@ -18,7 +18,10 @@
         };
       in
       {
-        imports = [ devmachineModule ];
+        imports = [
+          devmachineModule
+          ./devmachine.nix
+        ];
 
         systems = [
           "x86_64-linux"
