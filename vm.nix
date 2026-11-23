@@ -3,6 +3,20 @@
   modulesPath,
   ...
 }:
+
+let
+  userInstructions = ''
+    ╭──────────────────────────────────────────────────────╮
+    │                                                      │
+    │  DevMachine VM                                       │
+    │                                                      │
+    │  Project directory     /project                      │
+    │  Follow service logs   sudo journalctl -f            │
+    │  Power off the VM      Ctrl-k                        │
+    │                                                      │
+    ╰──────────────────────────────────────────────────────╯
+  '';
+in
 {
   imports = [
     "${modulesPath}/profiles/minimal.nix"
@@ -53,25 +67,12 @@
     };
   };
 
-  # Getty
+  # User instructions
   services.getty.autologinUser = "dev";
-  services.getty.helpLine = ''
+  services.getty.helpLine = userInstructions;
 
-    ╭──────────────────────────────────────────────────────╮
-    │                                                      │
-    │  DevMachine VM                                       │
-    │                                                      │
-    │  Project directory     /project                      │
-    │  Follow service logs   sudo journalctl -f            │
-    │  Power off the VM      Ctrl-k                        │
-    │                                                      │
-    │  Run following command on your host to connect with  │
-    │  better performing terminal:                         │
-    │                                                      │
-    │    nix run .#dev -- ssh                              │
-    │                                                      │
-    ╰──────────────────────────────────────────────────────╯
-  '';
+  users.motd = userInstructions;
+  security.pam.services.login.showMotd = lib.mkForce false;
 
   # Use a modern terminal type
   systemd.services."serial-getty@".environment.TERM = lib.mkDefault "xterm-256color";
