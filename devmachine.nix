@@ -24,6 +24,7 @@
           pkgs.zellij
 
           # Tools used to develop and check dev.sh and Nix files
+          pkgs.nixfmt-tree
           pkgs.shellcheck
         ];
       };
