@@ -30,6 +30,43 @@ Then:
 
 Run `nix run .#dev -- --help` for a full list of all `dev` command options.
 
+## Devmachine VM
+
+`dev vm` starts the VM in the background (if it is not already running) and
+connects to it over SSH. The VM console log is written to `devmachine-vm.log`
+in the project directory. Use `dev vm --status` to check whether the VM is
+running.
+
+### Disk image
+
+The VM disk is stored in the `devmachine.qcow2` image file in the directory
+where the VM is started. The image is created on the first start and keeps the
+VM state (home directory, service data) across restarts. Delete the image
+while the VM is stopped to reset the VM to a clean state, or to apply a changed
+`vm.diskSize`.
+
+### Automatic reload
+
+`dev vm --reload` also starts a background watcher on the host, which watches
+the `devmachine.nix` file. When the file changes, the watcher builds the new
+VM configuration and switches the running VM to it, so there is no need to
+restart the VM. The watcher stops when the VM stops, and its output is written
+to `devmachine-reload.log` in the project directory.
+
+The result of each reload is logged to the VM system journal with the
+`devmachine-reload` tag. To see when changes are applied, run in the VM:
+
+```
+journalctl -f -t devmachine-reload
+```
+
+A successful reload logs `switched to new configuration`. A failed reload
+logs `reload failed, see devmachine-reload.log on host`, and the build or
+switch error is in that log file.
+
+Automatic reload requires the VM to share the host Nix store, it does not work
+with `vm.isolateNixStore` enabled (restart the VM to apply changes instead).
+
 ## Configuration Options
 
 ### VM
