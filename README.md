@@ -98,8 +98,9 @@ A specific template can be used with
 
 ## AI Assistance
 
-This project is designed by a human and developed with the assistance of coding
-agents, following the [Responsible AI Guide](https://responsibleai.guide/).
+This project is designed by a human and developed by humand with
+the assistance of coding agents, following the
+[Responsible AI Guide](https://responsibleai.guide/).
 
 ## Credits
 
