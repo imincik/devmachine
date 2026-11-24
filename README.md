@@ -1,33 +1,36 @@
 # devmachine
 
-Declaratively configure development environment for your software project.
+Declaratively configure a reproducible, isolated development environment for
+your software project, powered by a NixOS VM.
 
 
 ## Features
 
-- **Shell environment** – reproducible, not isolated environment containing
-  packages (`dev shell`)
-- **Composable VM** – reproducible, isolated environment containing packages and
-  services, with coding agent isolation (`dev vm`)
+- **Shell environment** – reproducible environment containing your command line
+  and GUI tools (`dev shell`)
+
+- **Devmachine VM** – reproducible and isolated environment containing your
+  command line tools, coding agent and services (`dev vm`)
 
 
 ## Quick Start
 
-Add `devmachine` configuration to your project:
+Add `devmachine` to your project:
 
 ```
 nix flake init -t github:imincik/devmachine
 ```
 
-Then,
+Then:
 
-1. run `nix run .#dev -- vm --reload` or `nix develop` + `dev vm --reload` to
-   start a VM with services in background and connect to it over SSH. Changes
-   of `devmachine.nix` are applied to the running VM automatically. Running it
-   again connects to the already running VM
-1. run `nix run .#dev -- shell` or `nix develop` to launch a shell environment
+1. run `nix run .#dev -- vm --reload` to launch a VM
 
-Run `nix run .#dev -- --help` for a full list of `dev` command options
+1. add your coding agent to the `devmachine.vm.packages` list in the
+`devmachine.nix` configuration file (changes are applied automatically)
+
+1. launch the coding agent and start slop/vibe/smart coding your new project
+
+Run `nix run .#dev -- --help` for a full list of all `dev` command options.
 
 
 ## Configuration Options
@@ -35,7 +38,7 @@ Run `nix run .#dev -- --help` for a full list of `dev` command options
 ### VM
 
 - `vm.services`
-  - Description: NixOS configuration (module) of the services VM
+  - Description: NixOS configuration (module) for services running in the VM
   - Default: `{ }`
   - Example: `{ services.postgresql.enable = true; }`
 - `vm.forwardPorts`
@@ -90,15 +93,15 @@ Run `nix run .#dev -- --help` for a full list of `dev` command options
 - `shell.shellHook`
   - Description: shell hook to run when entering `dev shell`
   - Default: `""`
-  - Example: `''echo "Welcome in this shell environment!"''`
+  - Example: `''echo "Welcome to this shell environment!"''`
 
-For more configuration examples see the [templates](templates/) directory. A
-specific template can be used with
-`nix flake init -t github:imincik/devmachine#<template>`, e.g. `#postgres`.
+For more configuration examples see the [templates](templates/) directory.
+A specific template can be used with
+`nix flake init -t github:imincik/devmachine#<template>`.
 
 
 ## Credits
 
-Inspired by
+Inspired by the
 [Running local dev services with Nix](https://www.tweag.io/blog/2026-10-29-running-local-dev-services-with-nix/)
 blog post by Tweag.
