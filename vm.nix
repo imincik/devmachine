@@ -64,6 +64,8 @@ in
       KbdInteractiveAuthentication = false;
       PermitEmptyPasswords = "yes";
       UseDns = false;
+      # Set by `dev vm` to run vm.shellHook in interactive session
+      AcceptEnv = [ "DEVMACHINE_SHELL_HOOK" ];
     };
   };
 

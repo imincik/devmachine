@@ -25,6 +25,18 @@ in
           {
             environment.systemPackages = cfg.vm.packages;
 
+            # Run only in session marked by `dev vm`, after default shell init
+            # which enters the project directory. Unset marker, so shells
+            # started from the session don't run the hook again.
+            programs.bash.interactiveShellInit = lib.mkIf (cfg.vm.shellHook != "") (
+              lib.mkAfter ''
+                if [ -n "''${DEVMACHINE_SHELL_HOOK:-}" ]; then
+                  unset DEVMACHINE_SHELL_HOOK
+                  ${cfg.vm.shellHook}
+                fi
+              ''
+            );
+
             virtualisation.cores = cfg.vm.cores;
             virtualisation.memorySize = cfg.vm.memorySize;
             virtualisation.diskSize = cfg.vm.diskSize;
@@ -139,6 +151,19 @@ in
             default = [ ];
             example = lib.literalExpression "[ pkgs.htop ]";
             description = "List of packages installed in the VM.";
+          };
+
+          shellHook = mkOption {
+            type = types.lines;
+            default = "";
+            example = ''echo "Welcome to the VM!"'';
+            description = ''
+              Shell hook executed when connecting to the VM with interactive
+              `dev vm` session, after entering the project directory. It does
+              not run on console login, for remote commands (`dev vm <command>`)
+              or in shells started from the session (for example by a terminal
+              multiplexer).
+            '';
           };
 
           cores = mkOption {

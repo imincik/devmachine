@@ -135,7 +135,13 @@ connect_vm() {
   if [ -n "$reload" ]; then
     start_watcher
   fi
-  vm_ssh dev@127.0.0.1 "$@"
+
+  # Mark interactive session to run vm.shellHook, but not remote commands
+  if [ "$#" -eq 0 ]; then
+    vm_ssh -o SetEnv=DEVMACHINE_SHELL_HOOK=1 dev@127.0.0.1
+  else
+    vm_ssh dev@127.0.0.1 "$@"
+  fi
 }
 
 ### Configuration reload

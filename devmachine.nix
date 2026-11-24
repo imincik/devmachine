@@ -28,6 +28,35 @@
           pkgs.nixfmt-tree
           pkgs.shellcheck
         ];
+
+        # Start zellij with coding agent and system journal below it, attach to
+        # existing session on reconnect
+        shellHook =
+          let
+            layout = pkgs.writeText "devmachine-layout.kdl" ''
+              layout {
+                default_tab_template {
+                  pane size=1 borderless=true {
+                    plugin location="zellij:tab-bar"
+                  }
+                  children
+                  pane size=2 borderless=true {
+                    plugin location="zellij:status-bar"
+                  }
+                }
+                tab name="devmachine" {
+                  pane command="claude" focus=true
+                  pane command="sudo" size="20%" {
+                    args "journalctl" "-f"
+                  }
+                }
+              }
+            '';
+          in
+          ''
+            zellij attach devmachine 2>/dev/null \
+              || zellij --session devmachine --new-session-with-layout ${layout}
+          '';
       };
     };
 }

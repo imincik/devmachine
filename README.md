@@ -100,6 +100,12 @@ with `vm.isolateNixStore` enabled (restart the VM to apply changes instead).
   - Description: packages installed in the VM
   - Default: `[ ]`
   - Example: `[ pkgs.htop ]`
+- `vm.shellHook`
+  - Description: shell hook to run when connecting to the VM with interactive
+    `dev vm` session, after entering the project directory (not on console
+    login, for `dev vm <command>` or in shells started from the session)
+  - Default: `""`
+  - Example: `''echo "Welcome to the VM!"''`
 - `vm.cores`
   - Description: number of CPU cores of the VM
   - Default: `2`
