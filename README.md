@@ -98,7 +98,7 @@ A specific template can be used with
 
 ## AI Assistance
 
-This project is designed by a human and developed by humand with
+This project is designed by a human and developed by human with
 the assistance of coding agents, following the
 [Responsible AI Guide](https://responsibleai.guide/).
 
