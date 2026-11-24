@@ -3,7 +3,6 @@
 Declaratively configure a reproducible, isolated development environment for
 your software project, powered by a NixOS VM.
 
-
 ## Features
 
 - **Shell environment** – reproducible environment containing your command line
@@ -11,7 +10,6 @@ your software project, powered by a NixOS VM.
 
 - **Devmachine VM** – reproducible and isolated environment containing your
   command line tools, coding agent and services (`dev vm`)
-
 
 ## Quick Start
 
@@ -26,12 +24,11 @@ Then:
 1. run `nix run .#dev -- vm --reload` to launch a VM
 
 1. add your coding agent to the `devmachine.vm.packages` list in the
-`devmachine.nix` configuration file (changes are applied automatically)
+   `devmachine.nix` configuration file (changes are applied automatically)
 
 1. launch the coding agent and start slop/vibe/smart coding your new project
 
 Run `nix run .#dev -- --help` for a full list of all `dev` command options.
-
 
 ## Configuration Options
 
@@ -99,6 +96,10 @@ For more configuration examples see the [templates](templates/) directory.
 A specific template can be used with
 `nix flake init -t github:imincik/devmachine#<template>`.
 
+## AI Assistance
+
+This project is designed by a human and developed with the assistance of coding
+agents. All code is reviewed by a human.
 
 ## Credits
 
