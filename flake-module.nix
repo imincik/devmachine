@@ -194,7 +194,7 @@ in
             example = 10240;
             description = ''
               Disk size of the VM in MiB. Applies only when the disk image is
-              created, delete the existing `.qcow2` image to resize it.
+              created, see the README to resize an existing image.
             '';
           };
         };
