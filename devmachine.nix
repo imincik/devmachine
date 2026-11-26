@@ -16,6 +16,12 @@
       };
 
       devmachine.vm = {
+        # We need Nix to develop this project
+        nix = true;
+        diskSize = 20480;
+        cores = 8;
+        memorySize = 6144;
+
         # Packages installed in the VM
         packages = [
           pkgs.claude-code
