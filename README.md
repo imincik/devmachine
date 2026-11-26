@@ -99,7 +99,7 @@ with `vm.isolateNixStore` enabled (restart the VM to apply changes instead).
 - `vm.sshPort`
   - Description: host port (bound to `127.0.0.1`) forwarded to SSH in VM, used
     by `dev vm`
-  - Default: `2222`
+  - Default: `28022`
   - Example: `2200`
 - `vm.shareProjectDir`
   - Description: share project directory (git root or current directory) with

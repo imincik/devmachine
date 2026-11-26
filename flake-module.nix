@@ -127,7 +127,7 @@ in
 
           sshPort = mkOption {
             type = types.port;
-            default = 2222;
+            default = 28022;
             example = 2200;
             description = ''
               Host port, bound to 127.0.0.1, forwarded to SSH in the VM. Used by
