@@ -50,6 +50,28 @@ in
               writable = true;
             };
           }
+          (
+            { pkgs, ... }:
+            lib.mkIf cfg.vm.nix {
+              nix.enable = true;
+              nix.settings = {
+                experimental-features = [
+                  "nix-command"
+                  "flakes"
+                ];
+                trusted-users = [ "dev" ];
+              };
+
+              # Flakes in git repositories require git
+              environment.systemPackages = [ pkgs.git ];
+
+              # Store paths built in VM are written to disk image instead of
+              # memory. Writable store is not enabled by default with
+              # isolateNixStore.
+              virtualisation.writableStore = true;
+              virtualisation.writableStoreUseTmpfs = false;
+            }
+          )
         ];
       };
     in
@@ -139,6 +161,17 @@ in
             default = [ ];
             example = lib.literalExpression "[ pkgs.htop ]";
             description = "List of packages installed in the VM.";
+          };
+
+          nix = mkOption {
+            type = types.bool;
+            default = false;
+            example = true;
+            description = ''
+              Whether to enable Nix in the VM, with flakes and a writable Nix
+              store persisted in the disk image. Builds and downloads use the
+              VM disk, increase `diskSize` accordingly.
+            '';
           };
 
           cores = mkOption {

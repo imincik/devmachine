@@ -45,6 +45,16 @@ VM state (home directory, service data) across restarts. Delete the image
 while the VM is stopped to reset the VM to a clean state, or to apply a changed
 `vm.diskSize`.
 
+To grow the disk without losing the VM state, stop the VM, resize the image on
+the host and grow the filesystem in the VM:
+
+```
+nix shell nixpkgs#qemu -c qemu-img resize devmachine.qcow2 20G
+dev vm -- sudo resize2fs /dev/vda
+```
+
+Shrinking the disk is not supported, delete the image instead.
+
 ### Automatic reload
 
 `dev vm --reload` also starts a background watcher on the host, which watches
@@ -100,6 +110,12 @@ with `vm.isolateNixStore` enabled (restart the VM to apply changes instead).
   - Description: packages installed in the VM
   - Default: `[ ]`
   - Example: `[ pkgs.htop ]`
+- `vm.nix`
+  - Description: enable Nix in the VM, with flakes and a writable Nix store
+    persisted in the disk image (increase `vm.diskSize` for builds and
+    downloads)
+  - Default: `false`
+  - Example: `true`
 - `vm.cores`
   - Description: number of CPU cores of the VM
   - Default: `2`
@@ -110,7 +126,7 @@ with `vm.isolateNixStore` enabled (restart the VM to apply changes instead).
   - Example: `4096`
 - `vm.diskSize`
   - Description: disk size of the VM in MiB, applies only when the disk image
-    is created (delete the existing `.qcow2` image to resize it)
+    is created (see [Disk image](#disk-image) to resize an existing image)
   - Default: `1024`
   - Example: `10240`
 

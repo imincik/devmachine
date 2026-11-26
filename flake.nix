@@ -62,6 +62,14 @@
                 ];
                 systems = [ system ];
               }).packages.${system}.devmachine-vm;
+
+            # Test that the VM with Nix enabled is building
+            checks.nix-vm =
+              (flake-parts.lib.mkFlake { inherit inputs; } {
+                imports = [ devmachineModule ];
+                systems = [ system ];
+                perSystem.devmachine.vm.nix = true;
+              }).packages.${system}.devmachine-vm;
           };
       }
     );
