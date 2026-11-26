@@ -1,7 +1,7 @@
 {
   lib,
-  modulesPath,
   pkgs,
+  modulesPath,
   ...
 }:
 
@@ -100,13 +100,20 @@
     bind -x '"\C-k": sudo poweroff'
 
     # Interactive SSH login shell outside zellij (not nested shells, which
-    # inherit SSH_TTY), attach to devmachine zellij session or create it, log
-    # out when detached. Not on consoles, autologin there would attach
+    # inherit SSH_TTY), attach to devmachine zellij session or create it,
+    # log out when detached. Not on consoles, autologin there would attach
     # unattended clients to the session.
     if [ -z "''${ZELLIJ:-}" ] && shopt -q login_shell && [ -n "''${SSH_TTY:-}" ] &&
       [ -t 0 ] && [ -t 1 ]; then
       cd /project
-      zellij attach --create devmachine && exit
+      zellij attach --create devmachine
+
+      # Power off when session has ended (quit or killed), not when detached.
+      # Query fails on sessions which are not running.
+      if ! zellij --session devmachine action query-tab-names >/dev/null 2>&1; then
+        sudo poweroff
+      fi
+      exit
     fi
   '';
 
