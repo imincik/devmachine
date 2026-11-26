@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 usage() {
   cat <<EOF
 Usage: dev <command>
@@ -157,18 +159,20 @@ switch_vm() {
   vm_exec sudo "$system/bin/switch-to-configuration" test
 }
 
-# Report result to VM journal, so it is visible without watching log on host
+# Report result to VM journal, so it is visible without watching log on host.
+# VM shows it as zellij notice (devmachine-notify user service), failures are
+# logged with err priority.
 reload_vm() {
-  local msg
+  local priority msg
 
   echo "--- $(date '+%F %T') devmachine.nix changed"
   if switch_vm; then
-    msg="switched to new configuration"
+    priority=user.notice msg="switched to new configuration"
   else
-    msg="reload failed, see $reload_log on host"
+    priority=user.err msg="reload failed, see $reload_log on host"
   fi
   echo "--- $msg"
-  vm_exec logger -t devmachine-reload "$msg" || true
+  vm_exec logger -t devmachine-reload -p "$priority" "$msg" || true
 }
 
 watcher_running() {

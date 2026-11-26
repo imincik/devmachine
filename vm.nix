@@ -64,6 +64,37 @@
   # Terminal multiplexer started on login
   environment.systemPackages = [ pkgs.zellij ];
 
+  # Show configuration reload message logged by host (dev.sh) as notice in
+  # zellij session.
+  systemd.user.services.devmachine-notify = {
+    description = "Show devmachine reload message in zellij";
+    wantedBy = [ "default.target" ];
+    path = [
+      pkgs.jq
+      pkgs.systemd
+      pkgs.zellij
+    ];
+    serviceConfig.Restart = "always";
+    script = ''
+      z="zellij --session devmachine"
+
+      # Follow new messages only, not ones logged before service start
+      journalctl --follow --lines=0 --identifier=devmachine-reload --output=json |
+        jq --unbuffered -r '
+          (if (.PRIORITY | tonumber) <= 3 then "✘\t10s" else "✔\t3s" end)
+          + "\t" + .MESSAGE' |
+        while IFS=$'\t' read -r icon timeout msg; do
+          # Zellij prompt must be run from an existing pane, any terminal pane
+          # works (session may not be running, ignore errors)
+          pane=$($z action list-panes --json |
+            jq -r 'first(.[] | select(.is_plugin | not)).id') || continue
+          ZELLIJ_PANE_ID=$pane $z prompt notify "$icon $msg" --title devmachine \
+            --at top-right --no-pane-name --no-tab-name --timeout "$timeout" ||
+            true
+        done
+    '';
+  };
+
   # Execute in every interactive shell
   programs.bash.interactiveShellInit = ''
     bind -x '"\C-k": sudo poweroff'
