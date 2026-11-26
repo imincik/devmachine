@@ -1,22 +1,10 @@
 {
   lib,
   modulesPath,
+  pkgs,
   ...
 }:
 
-let
-  userInstructions = ''
-    ╭──────────────────────────────────────────────────────╮
-    │                                                      │
-    │  DevMachine VM                                       │
-    │                                                      │
-    │  Project directory     /project                      │
-    │  Follow service logs   sudo journalctl -f            │
-    │  Power off the VM      Ctrl-k                        │
-    │                                                      │
-    ╰──────────────────────────────────────────────────────╯
-  '';
-in
 {
   imports = [
     "${modulesPath}/profiles/minimal.nix"
@@ -67,26 +55,28 @@ in
     };
   };
 
-  # User instructions
-  services.getty.autologinUser = "dev";
-  services.getty.helpLine = userInstructions;
-
-  users.motd = userInstructions;
-  security.pam.services.login.showMotd = lib.mkForce false;
+  # Console is used for administration, user works over SSH
+  services.getty.autologinUser = "root";
 
   # Use a modern terminal type
   systemd.services."serial-getty@".environment.TERM = lib.mkDefault "xterm-256color";
 
-  # Execute after login
+  # Terminal multiplexer started on login
+  environment.systemPackages = [ pkgs.zellij ];
+
+  # Execute in every interactive shell
   programs.bash.interactiveShellInit = ''
     bind -x '"\C-k": sudo poweroff'
 
-    # Print boot time once boot has finished
-    systemctl is-system-running --wait >/dev/null 2>&1
-    systemd-analyze time | head -1
-
-    # Go directly to the project directory
-    cd /project
+    # Interactive SSH login shell outside zellij (not nested shells, which
+    # inherit SSH_TTY), attach to devmachine zellij session or create it, log
+    # out when detached. Not on consoles, autologin there would attach
+    # unattended clients to the session.
+    if [ -z "''${ZELLIJ:-}" ] && shopt -q login_shell && [ -n "''${SSH_TTY:-}" ] &&
+      [ -t 0 ] && [ -t 1 ]; then
+      cd /project
+      zellij attach --create devmachine && exit
+    fi
   '';
 
   system.stateVersion = "26.11";

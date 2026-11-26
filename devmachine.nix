@@ -28,7 +28,6 @@
           pkgs.git
           pkgs.helix
           pkgs.python3
-          pkgs.zellij
 
           # Tools used to develop and check dev.sh and Nix files
           pkgs.nixfmt-tree

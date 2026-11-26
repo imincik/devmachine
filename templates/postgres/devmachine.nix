@@ -52,7 +52,6 @@
           # pkgs.claude-code
           pkgs.git
           pkgs.vim
-          pkgs.zellij
         ];
       };
 

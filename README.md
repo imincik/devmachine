@@ -37,6 +37,12 @@ connects to it over SSH. The VM console log is written to `devmachine-vm.log`
 in the project directory. Use `dev vm --status` to check whether the VM is
 running.
 
+Interactive SSH logins start [zellij](https://zellij.dev) and attach to the
+`devmachine` session, or create it. Detaching from the session (`Ctrl-o d`)
+logs out, the session keeps running in the VM.
+
+Press `Ctrl-k` in a VM shell to power off the VM.
+
 ### Disk image
 
 The VM disk is stored in the `devmachine.qcow2` image file in the directory
