@@ -1,19 +1,7 @@
-{ inputs, ... }:
 {
   perSystem =
+    { pkgs, ... }:
     {
-      lib,
-      pkgs,
-      system,
-      ...
-    }:
-    {
-      # Allow unfree packages used in this configuration
-      _module.args.pkgs = import inputs.nixpkgs {
-        inherit system;
-        config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [ "claude-code" ];
-      };
-
       devmachine.vm = {
         # NixOS configuration of services running in the VM
         services = {
@@ -47,9 +35,12 @@
         # Ports forwarded from the host to the VM
         forwardPorts = [ 5432 ];
 
+        # Host port forwarded to SSH in the VM, unique per project so VMs
+        # of several projects can run at the same time
+        sshPort = 28024;
+
         # Packages installed in the VM
         packages = [
-          # pkgs.claude-code
           pkgs.git
           pkgs.vim
         ];
@@ -57,7 +48,10 @@
 
       devmachine.shell = {
         # Packages available in the shell environment
-        packages = [ pkgs.postgresql ];
+        packages = [
+          (pkgs.python3.withPackages (ps: [ ps.psycopg ]))
+          pkgs.postgresql
+        ];
 
         # Environment variables set in the shell environment
         environment = {
@@ -66,7 +60,8 @@
 
         # Shell hook run when entering the shell environment
         shellHook = ''
-          echo -e "\nRun 'psql -h localhost -U postgres' to connect to database."
+          echo -e "\nRun 'python app.py' to start web service on http://localhost:8000."
+          echo "Run 'psql \$PG_URI' to connect to database."
         '';
       };
     };

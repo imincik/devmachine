@@ -33,6 +33,10 @@
         # Ports forwarded from the host to the VM
         forwardPorts = [ ];
 
+        # Host port forwarded to SSH in the VM, unique per project so VMs
+        # of several projects can run at the same time
+        sshPort = 28023;
+
         # Packages installed in the VM
         packages = [
           # pkgs.claude-code

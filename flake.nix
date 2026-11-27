@@ -41,7 +41,11 @@
             };
             postgres = {
               path = ./templates/postgres;
-              description = "Template with postgresql service";
+              description = "Python web service in shell with PostgreSQL in VM";
+            };
+            llm-agent = {
+              path = ./templates/llm-agent;
+              description = "LLM coding agent (Claude Code) with tools and services in VM";
             };
           };
 
@@ -59,6 +63,24 @@
                 imports = [
                   devmachineModule
                   ./templates/default/devmachine.nix
+                ];
+                systems = [ system ];
+              }).packages.${system}.devmachine-vm;
+
+            checks.postgres-vm =
+              (flake-parts.lib.mkFlake { inherit inputs; } {
+                imports = [
+                  devmachineModule
+                  ./templates/postgres/devmachine.nix
+                ];
+                systems = [ system ];
+              }).packages.${system}.devmachine-vm;
+
+            checks.llm-agent-vm =
+              (flake-parts.lib.mkFlake { inherit inputs; } {
+                imports = [
+                  devmachineModule
+                  ./templates/llm-agent/devmachine.nix
                 ];
                 systems = [ system ];
               }).packages.${system}.devmachine-vm;

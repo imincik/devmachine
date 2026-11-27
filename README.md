@@ -11,6 +11,41 @@ your software project, powered by a NixOS VM.
 - **Devmachine VM** – reproducible and isolated environment containing your
   command line tools, coding agent and services (`dev vm`)
 
+## Use Cases
+
+1. **Software development with service dependencies**
+  – development tools (compilers, interpreters, libraries, database clients) are
+   provided by shell environment on the host
+  - services services required by the software (databases, message queues, web
+   servers) run in the VM
+
+   Example: Python web service running on the host, using PostgreSQL running
+   in the VM.
+
+   ```
+   nix flake init -t github:imincik/devmachine#postgres
+   nix run .#dev -- vm --reload   # start VM with PostgreSQL, then detach
+   nix run .#dev -- shell         # enter shell with Python and psql
+   python app.py                  # open http://localhost:8000
+   ```
+
+1. **LLM-assisted coding with agent isolation** – the coding agent, all
+   development tools and services run in the VM. The agent can freely run
+   commands, install packages and restart services, but it only sees the VM
+   and the shared project directory (`/project`), not your host home
+   directory, credentials or other projects.
+
+   Example: Claude Code developing the same Python web service with
+   PostgreSQL, all running in the VM.
+
+   ```
+   nix flake init -t github:imincik/devmachine#llm-agent
+   nix run .#dev -- vm --reload   # start VM and connect to it
+   claude                         # run in the VM, log in on first run
+   python app.py                  # run in another zellij pane in the VM,
+                                  # open http://localhost:8000 on the host
+   ```
+
 ## Quick Start
 
 Add `devmachine` to your project:

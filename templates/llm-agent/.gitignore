@@ -1,0 +1,7 @@
+.direnv/
+*.qcow2
+result
+devmachine-vm.log
+devmachine-vm.pid
+devmachine-reload.log
+devmachine-reload.pid
