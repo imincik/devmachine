@@ -84,10 +84,18 @@
           (if (.PRIORITY | tonumber) <= 3 then "✘\t10s" else "✔\t3s" end)
           + "\t" + .MESSAGE' |
         while IFS=$'\t' read -r icon timeout msg; do
+          # Session may be briefly unreachable right after configuration switch,
+          # retry for a while. Skip notice silently if session is not running.
+          for _ in 1 2 3 4 5; do
+            $z action query-tab-names >/dev/null 2>&1 && break
+            sleep 1
+          done
+
           # Zellij prompt must be run from an existing pane, any terminal pane
-          # works (session may not be running, ignore errors)
-          pane=$($z action list-panes --json |
+          # works
+          pane=$($z action list-panes --json 2>/dev/null |
             jq -r 'first(.[] | select(.is_plugin | not)).id') || continue
+          [ -n "$pane" ] || continue
           ZELLIJ_PANE_ID=$pane $z prompt notify "$icon $msg" --title devmachine \
             --at top-right --no-pane-name --no-tab-name --timeout "$timeout" ||
             true
